@@ -1,6 +1,8 @@
+var totalPages = 1;
+
 function paging(el, obj) {
     //总页数(必须数据)
-    var totalPages = parseInt(obj.totalPages);
+    totalPages = parseInt(obj.totalPages) || 1;
     //当前页数(必须数据)
     var nowPage = parseInt(obj.nowPage) || 1;
     //首页名字(可选数据)
@@ -18,50 +20,111 @@ function paging(el, obj) {
 
     var code = '';
     if (totalPages < 3) {
-        code = '<a class="btn btn-primary btn-sm">' + prevContent + '</a>\n' +
-            '        <a class="btn page btn-primary btn-sm">' + homePage + '</a>';
-        for (var i = 1; i < totalPages; i++) {
-            code += '<a class="btn page btn-primary btn-sm">' + endPage + '</a>';
+        if (nowPage === 1) {
+            code = '<a class="btn btn-primary btn-sm">' + prevContent + '</a>\n' +
+                '        <a class="btn page btn-primary btn-sm active">' + homePage + '</a>';
+            for (var i = 1; i < totalPages; i++) {
+                code += '<a class="btn page btn-primary btn-sm">' + endPage + '</a>';
+            }
+            code += '<a class="btn btn-primary btn-sm">' + nextContent + '</a>\n' +
+                '        <input id="jumpContent" class="jump">\n' +
+                '        <a class="btn btn-primary btn-sm" onclick="jump()">跳转</a>';
+            el.innerHTML = code;
+            addClick();
+            return
+        }else {
+            code = '<a class="btn btn-primary btn-sm">' + prevContent + '</a>\n' +
+                '        <a class="btn page btn-primary btn-sm active">' + homePage + '</a>';
+            for (var i = 1; i < totalPages; i++) {
+                code += '<a class="btn page btn-primary btn-sm active">' + endPage + '</a>';
+            }
+            code += '<a class="btn btn-primary btn-sm">' + nextContent + '</a>\n' +
+                '        <input id="jumpContent" class="jump">\n' +
+                '        <a class="btn btn-primary btn-sm" onclick="jump()">跳转</a>';
+            el.innerHTML = code;
+            addClick();
+            return
         }
-        code += '<a class="btn btn-primary btn-sm">' + nextContent + '</a>\n' +
-            '        <input class="jump">\n' +
-            '        <a class="btn btn-primary btn-sm">跳转</a>';
-        el.innerHTML = code;
-        return
     }
 
     if (position > 0 && position < totalPages - 1) {
         code = '<a class="btn btn-primary btn-sm">' + prevContent + '</a>\n' +
-        '        <a class="btn page btn-primary btn-sm">' + (nowPage - 1 > 1 ? nowPage - 1 : homePage) + '</a>\n' +
-        '        <a class="btn page btn-primary btn-sm">' + nowPage + '</a>\n' +
-        '        <a class="btn page btn-primary btn-sm">' + (nowPage + 1 > totalPages - 1 ? endPage : nowPage + 1) + '</a>\n' +
-        '        <p class="pText">' + (nowPage + 1 > totalPages - 1 ? empty : more) + '</p>\n' +
+            '        <a class="btn page btn-primary btn-sm">' + (nowPage - 1 > 1 ? nowPage - 1 : homePage) + '</a>\n' +
+            '        <a class="btn page btn-primary btn-sm active">' + nowPage + '</a>\n' +
+            '        <a class="btn page btn-primary btn-sm">' + (nowPage + 1 > totalPages - 1 ? endPage : nowPage + 1) + '</a>\n' +
+            '        <p class="pText">' + (nowPage + 1 > totalPages - 1 ? empty : more) + '</p>\n' +
             '        <a class="btn btn-primary btn-sm">' + nextContent + '</a>\n' +
-            '        <input class="jump">\n' +
-            '        <a class="btn btn-primary btn-sm">跳转</a>';
+            '        <input id="jumpContent" class="jump">\n' +
+            '        <a class="btn btn-primary btn-sm" onclick="jump()">跳转</a>';
         el.innerHTML = code;
+        addClick();
         return
     } else if (position === totalPages - 1) {
         //如果跳转到第一页
         code += '<a class="btn btn-primary btn-sm">' + prevContent + '</a>\n' +
-            '        <a class="btn page btn-primary btn-sm">' + homePage + '</a>\n' +
+            '        <a class="btn page btn-primary btn-sm active">' + homePage + '</a>\n' +
             '        <a class="btn page btn-primary btn-sm">2</a>\n' +
             '        <a class="btn page btn-primary btn-sm">3</a>\n' +
             '        <p class="pText">...</p>\n' +
             '        <a class="btn btn-primary btn-sm">' + nextContent + '</a>\n' +
-            '        <input class="jump">\n' +
-            '        <a class="btn btn-primary btn-sm">跳转</a>';
+            '        <input id="jumpContent" class="jump">\n' +
+            '        <a class="btn btn-primary btn-sm" onclick="jump()">跳转</a>';
         el.innerHTML = code;
+        addClick();
         return
     } else if (position === 0) {
         //如果跳转到最后一页
         code += '<a class="btn btn-primary btn-sm">' + prevContent + '</a>\n' +
             '        <a class="btn page btn-primary btn-sm">' + (nowPage - 2) + '</a>\n' +
             '        <a class="btn page btn-primary btn-sm">' + (nowPage - 1) + '</a>\n' +
-            '        <a class="btn page btn-primary btn-sm">' + endPage + '</a>\n' +
-            '        <input class="jump">\n' +
-            '        <a class="btn btn-primary btn-sm">跳转</a>';
-        console.log(code);
+            '        <a class="btn page btn-primary btn-sm active">' + endPage + '</a>\n' +
+            '        <input id="jumpContent" class="jump">\n' +
+            '        <a class="btn btn-primary btn-sm" onclick="jump()">跳转</a>';
         el.innerHTML = code;
+        addClick();
+        return
     }
+}
+
+function addClick() {
+    var pages = document.getElementsByClassName('page');
+    for (var i = 0; i < pages.length; i++) {
+        pages[i].onclick = function () {
+            console.log(this.text)
+            var obj = {
+                totalPages: 10,
+                nowPage: this.text
+            }
+            paging(box, obj);
+        }
+    }
+}
+
+function jump() {
+    var content = document.getElementById('jumpContent');
+    var nowPage = content.value;
+    if (nowPage) {
+        paging(content.parentNode, {
+            totalPages: totalPages,
+            nowPage: trim(nowPage)
+        });
+    }
+}
+
+function trim(str) {
+    for (var i = 0; i < str.length; i++) {
+        if (str.charAt(i) !== ' ') {
+            break
+        } else {
+            str = str.substr(1, str.length);
+        }
+    }
+    for (var j = str.length - 1; j > 0; j--) {
+        if (str.charAt(j) !== ' ') {
+            break
+        } else {
+            str = str.substr(0, str.length - 1);
+        }
+    }
+    return str
 }
