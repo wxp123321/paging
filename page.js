@@ -21,26 +21,26 @@ function paging(el, obj) {
     var code = '';
     if (totalPages < 3) {
         if (nowPage === 1) {
-            code = '<a class="btn btn-primary btn-sm">' + prevContent + '</a>\n' +
+            code = '<a class="btn btn-primary btn-sm prev">' + prevContent + '</a>\n' +
                 '        <a class="btn page btn-primary btn-sm active">' + homePage + '</a>';
             for (var i = 1; i < totalPages; i++) {
                 code += '<a class="btn page btn-primary btn-sm">' + endPage + '</a>';
             }
-            code += '<a class="btn btn-primary btn-sm">' + nextContent + '</a>\n' +
-                '        <input id="jumpContent" class="jump">\n' +
-                '        <a class="btn btn-primary btn-sm" onclick="jump()">跳转</a>';
+            code += '<a class="btn btn-primary btn-sm next">' + nextContent + '</a>\n' +
+                '        <input class="jump">\n' +
+                '        <a class="btn btn-primary btn-sm">跳转</a>';
             el.innerHTML = code;
             addClick();
             return
         }else {
-            code = '<a class="btn btn-primary btn-sm">' + prevContent + '</a>\n' +
+            code = '<a class="btn btn-primary btn-sm prev">' + prevContent + '</a>\n' +
                 '        <a class="btn page btn-primary btn-sm active">' + homePage + '</a>';
             for (var i = 1; i < totalPages; i++) {
                 code += '<a class="btn page btn-primary btn-sm active">' + endPage + '</a>';
             }
-            code += '<a class="btn btn-primary btn-sm">' + nextContent + '</a>\n' +
-                '        <input id="jumpContent" class="jump">\n' +
-                '        <a class="btn btn-primary btn-sm" onclick="jump()">跳转</a>';
+            code += '<a class="btn btn-primary btn-sm next">' + nextContent + '</a>\n' +
+                '        <input class="jump">\n' +
+                '        <a class="btn btn-primary btn-sm">跳转</a>';
             el.innerHTML = code;
             addClick();
             return
@@ -48,38 +48,37 @@ function paging(el, obj) {
     }
 
     if (position > 0 && position < totalPages - 1) {
-        code = '<a class="btn btn-primary btn-sm">' + prevContent + '</a>\n' +
+        code = '<a class="btn btn-primary btn-sm prev">' + prevContent + '</a>\n' +
             '        <a class="btn page btn-primary btn-sm">' + (nowPage - 1 > 1 ? nowPage - 1 : homePage) + '</a>\n' +
             '        <a class="btn page btn-primary btn-sm active">' + nowPage + '</a>\n' +
             '        <a class="btn page btn-primary btn-sm">' + (nowPage + 1 > totalPages - 1 ? endPage : nowPage + 1) + '</a>\n' +
             '        <p class="pText">' + (nowPage + 1 > totalPages - 1 ? empty : more) + '</p>\n' +
-            '        <a class="btn btn-primary btn-sm">' + nextContent + '</a>\n' +
-            '        <input id="jumpContent" class="jump">\n' +
-            '        <a class="btn btn-primary btn-sm" onclick="jump()">跳转</a>';
+            '        <a class="btn btn-primary btn-sm next">' + nextContent + '</a>\n' +
+            '        <input class="jump">\n' +
+            '        <a class="btn btn-primary btn-sm">跳转</a>';
         el.innerHTML = code;
         addClick();
         return
     } else if (position === totalPages - 1) {
         //如果跳转到第一页
-        code += '<a class="btn btn-primary btn-sm">' + prevContent + '</a>\n' +
-            '        <a class="btn page btn-primary btn-sm active">' + homePage + '</a>\n' +
+        code += '    <a class="btn page btn-primary btn-sm active">' + homePage + '</a>\n' +
             '        <a class="btn page btn-primary btn-sm">2</a>\n' +
             '        <a class="btn page btn-primary btn-sm">3</a>\n' +
             '        <p class="pText">...</p>\n' +
-            '        <a class="btn btn-primary btn-sm">' + nextContent + '</a>\n' +
-            '        <input id="jumpContent" class="jump">\n' +
-            '        <a class="btn btn-primary btn-sm" onclick="jump()">跳转</a>';
+            '        <a class="btn btn-primary btn-sm next">' + nextContent + '</a>\n' +
+            '        <input class="jump">\n' +
+            '        <a class="btn btn-primary btn-sm">跳转</a>';
         el.innerHTML = code;
         addClick();
         return
     } else if (position === 0) {
         //如果跳转到最后一页
-        code += '<a class="btn btn-primary btn-sm">' + prevContent + '</a>\n' +
+        code += '<a class="btn btn-primary btn-sm prev">' + prevContent + '</a>\n' +
             '        <a class="btn page btn-primary btn-sm">' + (nowPage - 2) + '</a>\n' +
             '        <a class="btn page btn-primary btn-sm">' + (nowPage - 1) + '</a>\n' +
             '        <a class="btn page btn-primary btn-sm active">' + endPage + '</a>\n' +
-            '        <input id="jumpContent" class="jump">\n' +
-            '        <a class="btn btn-primary btn-sm" onclick="jump()">跳转</a>';
+            '        <input class="jump">\n' +
+            '        <a class="btn btn-primary btn-sm">跳转</a>';
         el.innerHTML = code;
         addClick();
         return
@@ -100,11 +99,10 @@ function addClick() {
     }
 }
 
-function jump() {
-    var content = document.getElementById('jumpContent');
-    var nowPage = content.value;
+function jump(el) {
+    var nowPage = el.value;
     if (nowPage) {
-        paging(content.parentNode, {
+        paging(el.parentNode, {
             totalPages: totalPages,
             nowPage: trim(nowPage)
         });
